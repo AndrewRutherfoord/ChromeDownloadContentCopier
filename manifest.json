@@ -1,0 +1,13 @@
+{
+  "name": "My Extension",
+  "version": "1.0",
+  "manifest_version": 3,
+  "background": {
+    "service_worker": "background/background.js",
+    "type": "module"
+  },
+  "permissions": ["downloads", "clipboardWrite", "scripting", "tabs", "activeTab", "storage"],
+  "action": {
+    "default_popup": "popup/popup.html"
+  }
+}
