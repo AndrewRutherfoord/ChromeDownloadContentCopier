@@ -1,10 +1,6 @@
-import {
-  updateClipboard,
-  getHost,
-  getHostConfigData,
-  setHostConfigData,
-  getHostTextData,
-} from "../utils.js";
+import { getHost, getHostConfigData, setHostConfigData, getHostTextData } from "../utils.js";
+
+import { updateClipboard } from "../clipboard.js";
 
 async function copyContent() {
   // Copy the contents of the text area in the popup to the clipboard.
@@ -27,6 +23,8 @@ async function submitConfigForm(event) {
   setHostConfigData(await getHost(), config);
 }
 
+// Script starts here.
+
 const copyButton = document.getElementById("copy-button");
 copyButton.addEventListener("click", copyContent);
 
@@ -39,22 +37,24 @@ form.addEventListener("submit", submitConfigForm);
 
 const contentTextArea = document.getElementById("content");
 
-getHost().then((host) => {
-  // Load the text data that has been stored by the background script.
-  getHostTextData(host).then((data) => {
-    console.log(data);
-    contentTextArea.value = data;
-  });
-
-  // Load config data and render to form.
-  getHostConfigData(host).then((data) => {
-    activateCheckbox.checked = data.activate;
-    console.log(data);
-    filetypesCheckboxes.forEach((checkbox) => {
-      if (data.filetypes) {
-        checkbox.checked = data.filetypes.includes(checkbox.value);
-      }
-      checkbox.addEventListener("change", submitConfigForm);
+getHost()
+  .then((host) => {
+    // Load the text data that has been stored by the background script.
+    getHostTextData(host).then((data) => {
+      contentTextArea.value = data;
     });
+
+    // Load config data and render to form.
+    getHostConfigData(host).then((data) => {
+      activateCheckbox.checked = data.activate;
+      filetypesCheckboxes.forEach((checkbox) => {
+        if (data.filetypes) {
+          checkbox.checked = data.filetypes.includes(checkbox.value);
+        }
+        checkbox.addEventListener("change", submitConfigForm);
+      });
+    });
+  })
+  .catch(() => {
+    console.error("Tab no selected.");
   });
-});
