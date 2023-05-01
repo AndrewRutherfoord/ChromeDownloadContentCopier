@@ -33,6 +33,8 @@ copyButton.addEventListener("click", copyContent);
 const form = document.getElementById("config-form");
 const filetypesCheckboxes = form.querySelectorAll("input[type=checkbox][name=filetypes]");
 const activateCheckbox = form.querySelectorAll("input[type=checkbox][name=activate]")[0];
+activateCheckbox.addEventListener("change", submitConfigForm);
+
 form.addEventListener("submit", submitConfigForm);
 
 const contentTextArea = document.getElementById("content");
@@ -49,7 +51,10 @@ getHost().then((host) => {
     activateCheckbox.checked = data.activate;
     console.log(data);
     filetypesCheckboxes.forEach((checkbox) => {
-      checkbox.checked = data.filetypes.includes(checkbox.value);
+      if (data.filetypes) {
+        checkbox.checked = data.filetypes.includes(checkbox.value);
+      }
+      checkbox.addEventListener("change", submitConfigForm);
     });
   });
 });
